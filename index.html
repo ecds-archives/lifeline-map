@@ -339,20 +339,12 @@
         "No Car": perNV
       };
     
-      //var map = L.map('map').fitBounds(geojsonLayer.getBounds());
-      //var map = L.map('map').setView([33.821193, -84.36058], 10);
       var map = L.map('map', {
         center: [33.821193, -84.36058],
         zoom: 10,
         layers: [mapTiles, fultonPetResources, dekalbPetResources]
       });
-      //mapTiles.addTo(map);
-      //dekalbPetResources.addTo(map);
-      //fultonPetResources.addTo(map);
-      //cityData.addTo(map);
-      //deKalbFultonTracts.addTo(map);
 
-      
       L.control.layers(choroplethGroup).addTo(map);
       
     </script>
