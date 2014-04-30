@@ -24,6 +24,7 @@
       var econColor = ['#edf8fb', '#b2e2e2', '#66c2a4', '#2ca25f', '#006d2c']
       var eduColor = ['#eff3ff', '#bdd7e7', '#6baed6', '#3182bd', '#08519c']
       var transColor = ['#feedde', '#fdbe85', '#fd8d3c', '#e6550d', '#a63603']
+      var popColor = ['#f2f0f7', '#cbc9e2', '#9e9ac8', '#756bb1', '#54278f']
       
       function setIcon(type) {
         var typeIcon = '';
@@ -47,6 +48,25 @@
         });
         
         return iconObj; 
+      }
+      
+      function popDensityColor(d) {
+        return  d > 58.137831 ? popColor[4] :
+                d > 41.463997 ? popColor[3] :
+                d > 24.963995 ? popColor[2] :
+                d > 12.409103 ? popColor[1] :
+                                popColor[0] ;
+      }
+      
+      function popDensityStyle(feature) {
+        return {
+            fillColor: popDensityColor(feature.properties.Pop_Densit),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
       }
       
       function lessThanHSColor(d) {
@@ -260,8 +280,8 @@
       
       function perNVColor(d) {
         return  d > 23.157896 ? transColor[4] :
-                d > 10.71428 ? transColor[3] :
-                d > 5.313352 ? transColor[2] :
+                d > 10.71428  ? transColor[3] :
+                d > 5.313352  ? transColor[2] :
                 d > 2.277738  ? transColor[1] :
                                 transColor[0] ;
       }
@@ -278,7 +298,18 @@
       }
     
       function popUp(feature, layer) {
-        layer.bindPopup('<b>' + feature.properties.Name + '</b><br>' + feature.properties.Physical_A + '<br>' + feature.properties.Telephone + '<br><a href=\"http:\/\/' + feature.properties.Website + '\" target=\"_blank\">' + feature.properties.Website + '<\/a><br>');
+        layer.bindPopup(
+          '<b>' +
+          feature.properties.Name +
+          '</b><br>' +
+          feature.properties.Physical_A +
+          '<br>' + feature.properties.Telephone +
+          '<br><a href=\"http:\/\/' +
+          feature.properties.Website +
+          '\" target=\"_blank\">' +
+          feature.properties.Website +
+          '<\/a><br>'
+        );
       }
     
       var dekalbPetResources = new L.GeoJSON.AJAX("data/Dekalb_Pet_Resources.json", {
@@ -297,7 +328,7 @@
       
       var clear = '';
       
-      var cityData = new L.GeoJSON.AJAX("data/cityData.json", {onEachFeature:popUp});
+      var popDensity = new L.GeoJSON.AJAX("data/PopDensity.json", {style: popDensityStyle});
       
       var lessThanHS = new L.GeoJSON.AJAX("data/LessThanHS.json", {style: lessThanHSStyle});
       
@@ -325,18 +356,19 @@
       
       var choroplethGroup = {
         "Clear Map": clear,
-        "Less than High School": lessThanHS,
+        "Population Density": popDensity,
+        "High School or Less": lessThanHS,
+        "Undergraduate Degree or Some College": undergraduate,
         "Graduate Degree": graduates,
-        "Undergraduate Degree": undergraduate,
-        "Income Under 50K": perUnder50K,
-        "Income 100 - 150": per100_150,
-        "Income 151 - 500": per150_500,
-        "Income 500 - 1 Million": per500_mil,
-        "Income Over 1 Million": perOverMill,
+        "House Value Under 50K": perUnder50K,
+        "House Value 100k - 150k": per100_150,
+        "House Value 151k - 500k": per150_500,
+        "House Value 500k - 1 Million": per500_mil,
+        "House Value Over 1 Million": perOverMill,
         "Work from Home": perWorkHome,
-        "Travel Public Transportation": perPT,
-        "Own Car": perMV,
-        "No Car": perNV
+        "Use Public Transportation": perPT,
+        "Use Personal Veh": perMV,
+        "Bike or Walk": perNV
       };
     
       var map = L.map('map', {
