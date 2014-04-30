@@ -1,58 +1,360 @@
 <html>
-<head>
-  <title>Animal Lifeline Project</title>
-  <meta charset="utf-8" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link rel="stylesheet" href="css/leaflet.css" />
-  <!--[if lte IE 8]><link rel="stylesheet" href="css/leaflet.ie.css" /><![endif]-->
-</head>
-<body>
-  <div id="map" style="width: 1000px; height: 600px"></div>
-  <script src="js/churches.json.js"></script>
-  <script src="js/jquery.js"></script>
-  <script src="js/leaflet.js"></script>
-  <script>
-
-    var map = L.map('map').setView([33.755411, -84.388605], 12);
-
-    function onEachFeature(feature, layer) {
-      var popupContent = "<h2>" + feature.properties.name + "</h2><p>Ελληνικές εκκλησίες</p>";
-
-      //if (feature.properties && feature.properties.name) {
-      //  popupContent += feature.properties.name;
-      //}
-
-      layer.bindPopup(popupContent);
-    }
-
-    L.tileLayer('http://{s}.tile.cloudmade.com/504f324af9f845d1a0764a41f0cb75ed/997/256/{z}/{x}/{y}.png', {
-      maxZoom: 24,
-      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
-    }).addTo(map);
-
-    var churchLayer = L.geoJson(churches, {
-      pointToLayer: function (feature, latlng) {
-        return L.marker(latlng);
-      },
-      onEachFeature: onEachFeature
-    }).addTo(map);
+  <head>
+    <title>Animal Lifeline Project</title>
+    <meta charset="utf-8" />
+  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <link rel="stylesheet" href="css/leaflet.css" />
+    <!--[if lte IE 8]><link rel="stylesheet" href="css/leaflet.ie.css" /><![endif]-->
+      <script src="js/churches.json.js"></script>
+      <script src="js/jquery.js"></script>
+      <script src="js/leaflet.js"></script>
+      <script src="js/leaflet.ajax.min.js"></script>
+  </head>
+  <body>
+    <div id="map" style="width: 1000px; height: 800px"></div>
     
-    L.marker([33.755411, -84.388605]).addTo(map)
-      .bindPopup("<b>Sanctuary of the Great Gods</b><br />Samothrace, Greece").openPopup();
+    <script>
+      var mapTiles = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>'
+      });
+      
+      var econColor = ['#edf8fb', '#b2e2e2', '#66c2a4', '#2ca25f', '#006d2c']
+      var eduColor = ['#eff3ff', '#bdd7e7', '#6baed6', '#3182bd', '#08519c']
+      var transColor = ['#feedde', '#fdbe85', '#fd8d3c', '#e6550d', '#a63603']
+      
+      function setIcon(type) {
+        var typeIcon = '';
+        if (type == 'Veterinarian') {
+          typeIcon = 'images/veterinary-blue.png';
+        }
+        else if (type == 'Pet Stores' || type == 'Pet Store') {
+          typeIcon = 'images/supermarket.png';
+        }
+        else if (type == 'Shelter') {
+          typeIcon = 'images/shelter.png';
+        }
+        else {
+          typeIcon = 'images/veterinary-red.png';
+        }
+        var iconObj = L.icon({
+          iconUrl: typeIcon,
+          iconSize: [16, 21],
+          iconAnchor: [16, 37],
+          popupAnchor: [0, -28]
+        });
+        
+        return iconObj; 
+      }
+      
+      function lessThanHSColor(d) {
+        return  d > 58.137831 ? eduColor[4] :
+                d > 41.463997 ? eduColor[3] :
+                d > 24.963995 ? eduColor[2] :
+                d > 12.409103 ? eduColor[1] :
+                                eduColor[0] ;
+      }
+      
+      function lessThanHSStyle(feature) {
+        return {
+            fillColor: lessThanHSColor(feature.properties.Pct_No_Mor),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+      }
+      
+      function graduatesColor(d) {
+        return  d > 31.185428 ? eduColor[4] :
+                d > 21.780304 ? eduColor[3] :
+                d > 13.485402 ? eduColor[2] :
+                d > 6.712019  ? eduColor[1] :
+                                eduColor[0] ;
+      }
+      
+      function graduatesStyle(feature) {
+        return {
+            fillColor: lessThanHSColor(feature.properties.Percent),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+      }
+      
+      function undergraduateColor(d) {
+        return  d > 59.888477 ? eduColor[4] :
+                d > 51.633988 ? eduColor[3] :
+                d > 41.020657 ? eduColor[2] :
+                d > 26.757371 ? eduColor[1] :
+                                eduColor[0] ;
+      }
+      
+      function undergraduateStyle(feature) {
+        return {
+            fillColor: undergraduateColor(feature.properties.Pct_Underg),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+      }
+      //Start
+      function perUnder50KColor(d) {
+        return  d > 23.794213 ? econColor[4] :
+                d > 12.014135 ? econColor[3] :
+                d > 6.074767  ? econColor[2] :
+                d > 2.083334  ? econColor[1] :
+                                econColor[0] ;
+      }
+      
+      function perUnder50KStyle(feature) {
+        return {
+            fillColor: perUnder50KColor(feature.properties.Pct_Under_),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+      }
+      
+      function per100_150Color(d) {
+        return  d > 56.403623 ? econColor[4] :
+                d > 34.825872 ? econColor[3] :
+                d > 20.882354 ? econColor[2] :
+                d > 8.620691  ? econColor[1] :
+                                econColor[0] ;
+      }
+      
+      function per100_150Style(feature) {
+        return {
+            fillColor: per100_150Color(feature.properties.Pct_100k_1),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+      }
+      
+      function per150_500Color(d) {
+        return  d > 77.651906 ? econColor[4] :
+                d > 61.027838 ? econColor[3] :
+                d > 42.410715 ? econColor[2] :
+                d > 24.709303 ? econColor[1] :
+                                econColor[0] ;
+      }
+      
+      function per150_500Style(feature) {
+        return {
+            fillColor: per150_500Color(feature.properties.Pct_150k_4),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+      }
+      
+      function per500_milColor(d) {
+        return  d > 38.135199 ? econColor[4] :
+                d > 22.559854 ? econColor[3] :
+                d > 12.084064 ? econColor[2] :
+                d > 3.703705  ? econColor[1] :
+                                econColor[0] ;
+      }
+      
+      function per500_milStyle(feature) {
+        return {
+            fillColor: per500_milColor(feature.properties.Pct_500k_9),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+      }
+      
+      function perOverMillColor(d) {
+        return  d > 22.843824 ? econColor[4] :
+                d > 12.032521 ? econColor[3] :
+                d > 5.908585  ? econColor[2] :
+                d > 1.759532  ? econColor[1] :
+                                econColor[0] ;
+      }
+      
+      function perOverMillStyle(feature) {
+        return {
+            fillColor: perOverMillColor(feature.properties.Pct_1_mill),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+      }
+      
+      function perWorkHomeColor(d) {
+        return  d > 13.526417 ? transColor[4] :
+                d > 8.348393  ? transColor[3] :
+                d > 5.056034  ? transColor[2] :
+                d > 2.425877  ? transColor[1] :
+                                transColor[0] ;
+      }
+      
+      function perWorkHomeStyle(feature) {
+        return {
+            fillColor: perWorkHomeColor(feature.properties.Pct_Work_a),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+      }
+      
+      function perPTColor(d) {
+        return  d > 24.873738 ? transColor[4] :
+                d > 14.491265 ? transColor[3] :
+                d > 8.32115   ? transColor[2] :
+                d > 3.618776  ? transColor[1] :
+                                transColor[0] ;
+      }
+      
+      function perPTStyle(feature) {
+        return {
+            fillColor: perPTColor(feature.properties.Pct_Public),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+      }
+      
+      function perMVColor(d) {
+        return  d > 84.932025 ? transColor[4] :
+                d > 75.885418 ? transColor[3] :
+                d > 61.084222 ? transColor[2] :
+                d > 29.663811 ? transColor[1] :
+                                transColor[0] ;
+      }
+      
+      function perMVStyle(feature) {
+        return {
+            fillColor: perMVColor(feature.properties.Pct_Motor_),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+      }
+      
+      function perNVColor(d) {
+        return  d > 23.157896 ? transColor[4] :
+                d > 10.71428 ? transColor[3] :
+                d > 5.313352 ? transColor[2] :
+                d > 2.277738  ? transColor[1] :
+                                transColor[0] ;
+      }
+      
+      function perNVStyle(feature) {
+        return {
+            fillColor: perNVColor(feature.properties.Pct_Non_Ve),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+      }
+    
+      function popUp(feature, layer) {
+        layer.bindPopup('<b>' + feature.properties.Name + '</b><br>' + feature.properties.Physical_A + '<br>' + feature.properties.Telephone + '<br><a href=\"http:\/\/' + feature.properties.Website + '\" target=\"_blank\">' + feature.properties.Website + '<\/a><br>');
+      }
+    
+      var dekalbPetResources = new L.GeoJSON.AJAX("data/Dekalb_Pet_Resources.json", {
+        pointToLayer: function (feature, latlng) {
+          return L.marker(latlng, {icon: setIcon(feature.properties.Resources)});
+        },
+        onEachFeature: popUp
+      });
 
-    var popup = L.popup();
+      var fultonPetResources = new L.GeoJSON.AJAX("data/Fulton_Pet_Resources.json", {
+        pointToLayer: function (feature, latlng) {
+          return L.marker(latlng, {icon: setIcon(feature.properties.Resource)});
+        },
+        onEachFeature: popUp
+      });
+      
+      var clear = '';
+      
+      var cityData = new L.GeoJSON.AJAX("data/cityData.json", {onEachFeature:popUp});
+      
+      var lessThanHS = new L.GeoJSON.AJAX("data/LessThanHS.json", {style: lessThanHSStyle});
+      
+      var graduates = new L.GeoJSON.AJAX("data/Graduates.json", {style: graduatesStyle});
+      
+      var undergraduate = new L.GeoJSON.AJAX("data/Undergraduates.json", {style: undergraduateStyle});
+      
+      var perUnder50K = new L.GeoJSON.AJAX("data/PerUnder50k.json", {style: perUnder50KStyle});
+      
+      var per100_150 = new L.GeoJSON.AJAX("data/Per100_150.json", {style: per100_150Style});
+      
+      var per150_500 = new L.GeoJSON.AJAX("data/Per150_500.json", {style: per150_500Style});
+      
+      var per500_mil = new L.GeoJSON.AJAX("data/Per500_mil.json", {style: per500_milStyle});
+      
+      var perOverMill = new L.GeoJSON.AJAX("data/PerOverMil.json", {style: perOverMillStyle});
+      
+      var perWorkHome = new L.GeoJSON.AJAX("data/PerWorkHome.json", {style: perWorkHomeStyle});
+      
+      var perPT = new L.GeoJSON.AJAX("data/perPT.json", {style: perPTStyle});
+      
+      var perMV = new L.GeoJSON.AJAX("data/perMV.json", {style: perMVStyle});
+      
+      var perNV = new L.GeoJSON.AJAX("data/perNV.json", {style: perNVStyle});
+      
+      var choroplethGroup = {
+        "Clear Map": clear,
+        "Less than High School": lessThanHS,
+        "Graduate Degree": graduates,
+        "Undergraduate Degree": undergraduate,
+        "Income Under 50K": perUnder50K,
+        "Income 100 - 150": per100_150,
+        "Income 151 - 500": per150_500,
+        "Income 500 - 1 Million": per500_mil,
+        "Income Over 1 Million": perOverMill,
+        "Work from Home": perWorkHome,
+        "Travel Public Transportation": perPT,
+        "Own Car": perMV,
+        "No Car": perNV
+      };
+    
+      //var map = L.map('map').fitBounds(geojsonLayer.getBounds());
+      //var map = L.map('map').setView([33.821193, -84.36058], 10);
+      var map = L.map('map', {
+        center: [33.821193, -84.36058],
+        zoom: 10,
+        layers: [mapTiles, fultonPetResources, dekalbPetResources]
+      });
+      //mapTiles.addTo(map);
+      //dekalbPetResources.addTo(map);
+      //fultonPetResources.addTo(map);
+      //cityData.addTo(map);
+      //deKalbFultonTracts.addTo(map);
 
-    function onMapClick(e) {
-      popup
-        .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString())
-        .openOn(map);
-    }
-
-    map.on('click', onMapClick);
-
-  </script>
-</body>
+      
+      L.control.layers(choroplethGroup).addTo(map);
+      
+    </script>
+  </body>
 </html>
