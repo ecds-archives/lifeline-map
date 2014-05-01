@@ -86,11 +86,11 @@
       }
       
       function perCapitaIncomeColor(d) {
-        return  d > perCapitaIncomeNums[0] ? popColor[4] :
-                d > perCapitaIncome[1]  ? popColor[3] :
-                d > perCapitaIncome[2]  ? popColor[2] :
-                d > perCapitaIncome[3]  ? popColor[1] :
-                                          popColor[0] ;
+        return  d > perCapitaIncomeNums[0]  ? popColor[4] :
+                d > perCapitaIncomeNums[1]  ? popColor[3] :
+                d > perCapitaIncomeNums[2]  ? popColor[2] :
+                d > perCapitaIncomeNums[3]  ? popColor[1] :
+                                              popColor[0] ;
       }
       
       function perCapitaIncomeStyle(feature) {
