@@ -21,10 +21,25 @@
         attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>'
       });
       
-      var econColor = ['#edf8fb', '#b2e2e2', '#66c2a4', '#2ca25f', '#006d2c']
-      var eduColor = ['#eff3ff', '#bdd7e7', '#6baed6', '#3182bd', '#08519c']
-      var transColor = ['#feedde', '#fdbe85', '#fd8d3c', '#e6550d', '#a63603']
-      var popColor = ['#f2f0f7', '#cbc9e2', '#9e9ac8', '#756bb1', '#54278f']
+      var econColor = ['#edf8fb', '#b2e2e2', '#66c2a4', '#2ca25f', '#006d2c'];
+      var eduColor = ['#eff3ff', '#bdd7e7', '#6baed6', '#3182bd', '#08519c'];
+      var transColor = ['#feedde', '#fdbe85', '#fd8d3c', '#e6550d', '#a63603'];
+      var popColor = ['#f2f0f7', '#cbc9e2', '#9e9ac8', '#756bb1', '#54278f'];
+      
+      var popDensityNums = [13257.520001, 6958.852001, 3797.314001, 2054.115001];
+      var lessThanHSNums = [58.137831, 41.463997, 24.963995, 12.409103];
+      var graduatesNums = [31.185428, 21.780304, 13.485402, 6.712019];
+      var undergraduateNums = [59.888477, 51.633988, 41.020657, 26.757371];
+      var perUnder50kNums = [23.794213, 12.014135, 6.074767, 2.083334];
+      var per100_150Nums = [56.403623, 34.825872, 20.882354, 8.620691];
+      var per150_500Nums = [77.651906, 61.027838, 42.410715, 24.709303];
+      var per500_milNums = [38.135199, 22.559854, 12.084064, 3.703705];
+      var perOverMillNums = [22.843824, 12.032521, 5.908585, 1.759532];
+      var perWorkHomeNums = [13.526417, 8.348393, 5.056034, 2.425877];
+      var perPTNums = [24.873738, 14.491265, 8.32115, 3.618776];
+      var perMVNums = [84.932025, 75.885418, 61.084222, 29.663811];
+      var perNVNums = [23.157896, 10.71428, 5.313352, 2.277738];
+      
       
       function setIcon(type) {
         var typeIcon = '';
@@ -50,8 +65,6 @@
         return iconObj; 
       }
       
-      var popDensityNums = [13257.520001, 6958.852001, 3797.314001, 2054.115001]
-      
       function popDensityColor(d) {
         return  d > popDensityNums[0] ? popColor[4] :
                 d > popDensityNums[1] ? popColor[3] :
@@ -72,11 +85,11 @@
       }
       
       function lessThanHSColor(d) {
-        return  d > 58.137831 ? eduColor[4] :
-                d > 41.463997 ? eduColor[3] :
-                d > 24.963995 ? eduColor[2] :
-                d > 12.409103 ? eduColor[1] :
-                                eduColor[0] ;
+        return  d > lessThanHSNums[0] ? eduColor[4] :
+                d > lessThanHSNums[1] ? eduColor[3] :
+                d > lessThanHSNums[2] ? eduColor[2] :
+                d > lessThanHSNums[3] ? eduColor[1] :
+                                        eduColor[0] ;
       }
       
       function lessThanHSStyle(feature) {
@@ -91,11 +104,11 @@
       }
       
       function graduatesColor(d) {
-        return  d > 31.185428 ? eduColor[4] :
-                d > 21.780304 ? eduColor[3] :
-                d > 13.485402 ? eduColor[2] :
-                d > 6.712019  ? eduColor[1] :
-                                eduColor[0] ;
+        return  d > graduatesNums[0]  ? eduColor[4] :
+                d > graduatesNums[1]  ? eduColor[3] :
+                d > graduatesNums[2]  ? eduColor[2] :
+                d > graduatesNums[3]  ? eduColor[1] :
+                                        eduColor[0] ;
       }
       
       function graduatesStyle(feature) {
@@ -110,11 +123,11 @@
       }
       
       function undergraduateColor(d) {
-        return  d > 59.888477 ? eduColor[4] :
-                d > 51.633988 ? eduColor[3] :
-                d > 41.020657 ? eduColor[2] :
-                d > 26.757371 ? eduColor[1] :
-                                eduColor[0] ;
+        return  d > undergraduateNums[0]  ? eduColor[4] :
+                d > undergraduateNums[1]  ? eduColor[3] :
+                d > undergraduateNums[2]  ? eduColor[2] :
+                d > undergraduateNums[3]  ? eduColor[1] :
+                                            eduColor[0] ;
       }
       
       function undergraduateStyle(feature) {
@@ -127,13 +140,13 @@
             fillOpacity: 0.7
         };
       }
-      //Start
+      
       function perUnder50KColor(d) {
-        return  d > 23.794213 ? econColor[4] :
-                d > 12.014135 ? econColor[3] :
-                d > 6.074767  ? econColor[2] :
-                d > 2.083334  ? econColor[1] :
-                                econColor[0] ;
+        return  d > perUnder50kNums[0]  ? econColor[4] :
+                d > perUnder50kNums[1]  ? econColor[3] :
+                d > perUnder50kNums[2]  ? econColor[2] :
+                d > perUnder50kNums[3]  ? econColor[1] :
+                                          econColor[0] ;
       }
       
       function perUnder50KStyle(feature) {
@@ -148,11 +161,11 @@
       }
       
       function per100_150Color(d) {
-        return  d > 56.403623 ? econColor[4] :
-                d > 34.825872 ? econColor[3] :
-                d > 20.882354 ? econColor[2] :
-                d > 8.620691  ? econColor[1] :
-                                econColor[0] ;
+        return  d > per100_150Nums[0] ? econColor[4] :
+                d > per100_150Nums[1] ? econColor[3] :
+                d > per100_150Nums[2] ? econColor[2] :
+                d > per100_150Nums[3] ? econColor[1] :
+                                        econColor[0] ;
       }
       
       function per100_150Style(feature) {
@@ -167,11 +180,11 @@
       }
       
       function per150_500Color(d) {
-        return  d > 77.651906 ? econColor[4] :
-                d > 61.027838 ? econColor[3] :
-                d > 42.410715 ? econColor[2] :
-                d > 24.709303 ? econColor[1] :
-                                econColor[0] ;
+        return  d > per150_500Nums[0] ? econColor[4] :
+                d > per150_500Nums[1] ? econColor[3] :
+                d > per150_500Nums[2] ? econColor[2] :
+                d > per150_500Nums[3] ? econColor[1] :
+                                        econColor[0] ;
       }
       
       function per150_500Style(feature) {
@@ -186,11 +199,11 @@
       }
       
       function per500_milColor(d) {
-        return  d > 38.135199 ? econColor[4] :
-                d > 22.559854 ? econColor[3] :
-                d > 12.084064 ? econColor[2] :
-                d > 3.703705  ? econColor[1] :
-                                econColor[0] ;
+        return  d > per500_milNums[0] ? econColor[4] :
+                d > per500_milNums[1] ? econColor[3] :
+                d > per500_milNums[2] ? econColor[2] :
+                d > per500_milNums[3] ? econColor[1] :
+                                        econColor[0] ;
       }
       
       function per500_milStyle(feature) {
@@ -205,11 +218,11 @@
       }
       
       function perOverMillColor(d) {
-        return  d > 22.843824 ? econColor[4] :
-                d > 12.032521 ? econColor[3] :
-                d > 5.908585  ? econColor[2] :
-                d > 1.759532  ? econColor[1] :
-                                econColor[0] ;
+        return  d > perOverMillNums[0]  ? econColor[4] :
+                d > perOverMillNums[1]  ? econColor[3] :
+                d > perOverMillNums[2]  ? econColor[2] :
+                d > perOverMillNums[3]  ? econColor[1] :
+                                          econColor[0] ;
       }
       
       function perOverMillStyle(feature) {
@@ -224,11 +237,11 @@
       }
       
       function perWorkHomeColor(d) {
-        return  d > 13.526417 ? transColor[4] :
-                d > 8.348393  ? transColor[3] :
-                d > 5.056034  ? transColor[2] :
-                d > 2.425877  ? transColor[1] :
-                                transColor[0] ;
+        return  d > perWorkHomeNums[0]  ? transColor[4] :
+                d > perWorkHomeNums[1]  ? transColor[3] :
+                d > perWorkHomeNums[2]  ? transColor[2] :
+                d > perWorkHomeNums[3]  ? transColor[1] :
+                                          transColor[0] ;
       }
       
       function perWorkHomeStyle(feature) {
@@ -243,11 +256,11 @@
       }
       
       function perPTColor(d) {
-        return  d > 24.873738 ? transColor[4] :
-                d > 14.491265 ? transColor[3] :
-                d > 8.32115   ? transColor[2] :
-                d > 3.618776  ? transColor[1] :
-                                transColor[0] ;
+        return  d > perPTNums[0]  ? transColor[4] :
+                d > perPTNums[1]  ? transColor[3] :
+                d > perPTNums[2]  ? transColor[2] :
+                d > perPTNums[3]  ? transColor[1] :
+                                    transColor[0] ;
       }
       
       function perPTStyle(feature) {
@@ -262,11 +275,11 @@
       }
       
       function perMVColor(d) {
-        return  d > 84.932025 ? transColor[4] :
-                d > 75.885418 ? transColor[3] :
-                d > 61.084222 ? transColor[2] :
-                d > 29.663811 ? transColor[1] :
-                                transColor[0] ;
+        return  d > perMVNums[0]  ? transColor[4] :
+                d > perMVNums[1]  ? transColor[3] :
+                d > perMVNums[2]  ? transColor[2] :
+                d > perMVNums[3]  ? transColor[1] :
+                                    transColor[0] ;
       }
       
       function perMVStyle(feature) {
@@ -281,11 +294,11 @@
       }
       
       function perNVColor(d) {
-        return  d > 23.157896 ? transColor[4] :
-                d > 10.71428  ? transColor[3] :
-                d > 5.313352  ? transColor[2] :
-                d > 2.277738  ? transColor[1] :
-                                transColor[0] ;
+        return  d > perNVNums[0]  ? transColor[4] :
+                d > perNVNums[1]  ? transColor[3] :
+                d > perNVNums[2]  ? transColor[2] :
+                d > perNVNums[3]  ? transColor[1] :
+                                    transColor[0] ;
       }
       
       function perNVStyle(feature) {
