@@ -50,12 +50,14 @@
         return iconObj; 
       }
       
+      var popDensityNums = [13257.520001, 6958.852001, 3797.314001, 2054.115001]
+      
       function popDensityColor(d) {
-        return  d > 13257.520001  ? popColor[4] :
-                d > 6958.852001   ? popColor[3] :
-                d > 3797.314001   ? popColor[2] :
-                d > 2054.115001   ? popColor[1] :
-                                    popColor[0] ;
+        return  d > popDensityNums[0] ? popColor[4] :
+                d > popDensityNums[1] ? popColor[3] :
+                d > popDensityNums[2] ? popColor[2] :
+                d > popDensityNums[3] ? popColor[1] :
+                                        popColor[0] ;
       }
       
       function popDensityStyle(feature) {
