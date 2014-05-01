@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
     <link rel="stylesheet" href="css/leaflet.css" />
-    <!--[if lte IE 8]><link rel="stylesheet" href="css/leaflet.ie.css" /><![endif]-->
+      <!--[if lte IE 8]><link rel="stylesheet" href="css/leaflet.ie.css" /><![endif]-->
       <script src="js/churches.json.js"></script>
       <script src="js/jquery.js"></script>
       <script src="js/leaflet.js"></script>
@@ -27,6 +27,7 @@
       var popColor = ['#f2f0f7', '#cbc9e2', '#9e9ac8', '#756bb1', '#54278f'];
       
       var popDensityNums = [13257.520001, 6958.852001, 3797.314001, 2054.115001];
+      var perCapitaIncomeNums = [73556.000001, 50864.000001, 33600.000001, 20186.000001]
       var lessThanHSNums = [58.137831, 41.463997, 24.963995, 12.409103];
       var graduatesNums = [31.185428, 21.780304, 13.485402, 6.712019];
       var undergraduateNums = [59.888477, 51.633988, 41.020657, 26.757371];
@@ -36,9 +37,9 @@
       var per500_milNums = [38.135199, 22.559854, 12.084064, 3.703705];
       var perOverMillNums = [22.843824, 12.032521, 5.908585, 1.759532];
       var perWorkHomeNums = [13.526417, 8.348393, 5.056034, 2.425877];
-      var perPTNums = [24.873738, 14.491265, 8.32115, 3.618776];
+      var perPTNums = [24.873738, 14.491265, 8.321115, 3.618776];
       var perMVNums = [84.932025, 75.885418, 61.084222, 29.663811];
-      var perNVNums = [23.157896, 10.71428, 5.313352, 2.277738];
+      var perNVNums = [23.157896, 10.714287, 5.313352, 2.277738];
       
       
       function setIcon(type) {
@@ -76,6 +77,25 @@
       function popDensityStyle(feature) {
         return {
             fillColor: popDensityColor(feature.properties.Pop_Densit),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+      }
+      
+      function perCapitaIncomeColor(d) {
+        return  d > perCapitaIncomeNums[0] ? popColor[4] :
+                d > perCapitaIncome[1]  ? popColor[3] :
+                d > perCapitaIncome[2]  ? popColor[2] :
+                d > perCapitaIncome[3]  ? popColor[1] :
+                                          popColor[0] ;
+      }
+      
+      function perCapitaIncomeStyle(feature) {
+        return {
+            fillColor: perCapitaIncomeColor(feature.properties.Per_Capita),
             weight: 2,
             opacity: 1,
             color: 'white',
@@ -345,6 +365,8 @@
       
       var popDensity = new L.GeoJSON.AJAX("data/PopDensity.json", {style: popDensityStyle});
       
+      var perCapitaIncome = new L.GeoJSON.AJAX("data/PerCapitaIncome.json", {style: perCapitaIncomeStyle});
+      
       var lessThanHS = new L.GeoJSON.AJAX("data/LessThanHS.json", {style: lessThanHSStyle});
       
       var graduates = new L.GeoJSON.AJAX("data/Graduates.json", {style: graduatesStyle});
@@ -372,6 +394,7 @@
       var choroplethGroup = {
         "Clear Map": clear,
         "People Per Squre Mile": popDensity,
+        "Per Captia Income": perCapitaIncome,
         "High School or Less": lessThanHS,
         "Undergraduate Degree or Some College": undergraduate,
         "Graduate Degree": graduates,
