@@ -498,9 +498,7 @@
           $( "#legend" ).html($legend);
           
           var selected = $(this).parent().text();
-          console.log(selected);
           var selectedID = selected.replace(/\s/g, '');
-          console.log(selectedID);
           $('#'+selectedID).show();
           
         });
