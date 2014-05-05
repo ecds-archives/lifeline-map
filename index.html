@@ -7,13 +7,25 @@
   
     <link rel="stylesheet" href="css/leaflet.css" />
       <!--[if lte IE 8]><link rel="stylesheet" href="css/leaflet.ie.css" /><![endif]-->
-      <script src="js/churches.json.js"></script>
+      <link rel="stylesheet" href="css/local.css" />
       <script src="js/jquery.js"></script>
       <script src="js/leaflet.js"></script>
       <script src="js/leaflet.ajax.min.js"></script>
   </head>
   <body>
     <div id="map" style="width: 1000px; height: 800px"></div>
+    <div id="legend">
+      <div id="color1" class="color"></div>
+      <div id="number1" class="number"></div>
+      <div id="color2" class="color"></div>
+      <div id="number2" class="number"></div>
+      <div id="color3" class="color"></div>
+      <div id="number3" class="number"></div>
+      <div id="color4" class="color"></div>
+      <div id="number4" class="number"></div>
+      <div id="color5" class="color"></div>
+      <div id="number5" class="number"></div>
+    </div>
     
     <script>
       var mapTiles = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -21,26 +33,40 @@
         attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>'
       });
       
-      var econColor = ['#edf8fb', '#b2e2e2', '#66c2a4', '#2ca25f', '#006d2c'];
+      var econColor = ['#006d2c', '#2ca25f','#66c2a4', '#b2e2e2','#edf8fb'];
       var eduColor = ['#eff3ff', '#bdd7e7', '#6baed6', '#3182bd', '#08519c'];
-      var transColor = ['#feedde', '#fdbe85', '#fd8d3c', '#e6550d', '#a63603'];
-      var popColor = ['#f2f0f7', '#cbc9e2', '#9e9ac8', '#756bb1', '#54278f'];
+      var eduColor = ['#08519c', '#3182bd', '#6baed6', '#bdd7e7', '#eff3ff'];
+      var transColor = ['#a63603', '#e6550d', '#fd8d3c', '#fdbe85','#feedde' ];
+      var popColor = ['#54278f', '#756bb1', '#9e9ac8', '#cbc9e2','#f2f0f7'];
       
       var popDensityNums = [13257.520001, 6958.852001, 3797.314001, 2054.115001];
+      var popDensityRange = ['13257.520001 - 19179.560000', '6958.852001 - 13257.520000', '3797.314001 - 6958.852000', '2054.115001 - 3797.31400', '0.000000 - 2054.11500'];
       var perCapitaIncomeNums = [73556.000001, 50864.000001, 33600.000001, 20186.000001]
+      var perCapitaIncomeRange = ['73556.000001 - 125196.000000', '50864.000001 - 73556.000000', '33600.000001 - 50864.000000', '20186.000001 - 33600.000000', '0.000000 - 20186.000000']
       var lessThanHSNums = [58.137831, 41.463997, 24.963995, 12.409103];
+      var lessThanHSRange = ['58.137831 - 93.360806', '41.463997 - 58.137830', '24.963995 - 41.463996', '12.409103 - 24.963994', '0.000000 - 12.409102'];
       var graduatesNums = [31.185428, 21.780304, 13.485402, 6.712019];
+      var graduatesRange = ['31.185428 - 49.195058', '21.780304 - 31.185427', '13.485402 - 21.780303', '6.712019 - 13.485401', '0.000000 - 6.712018'];
       var undergraduateNums = [59.888477, 51.633988, 41.020657, 26.757371];
+      var undergraduateRange = ['59.888477 - 74.805599', '51.633988 - 59.888476', '41.020657 - 51.633987', '26.757371 - 41.020656', '0.000000 - 26.757370'];
       var perUnder50kNums = [23.794213, 12.014135, 6.074767, 2.083334];
+      var perUnder50kRange = ['23.794213 - 55.434783', '12.014135 - 23.794212', '6.074767 - 12.014134', '2.083334 - 6.074766'];
       var per100_150Nums = [56.403623, 34.825872, 20.882354, 8.620691];
+      var per100_150Range = ['56.403623 - 86.000000', '34.825872 - 56.403622', '20.882354 - 34.825871', '8.620691 - 20.882353', '0.000000 - 8.620690'];
       var per150_500Nums = [77.651906, 61.027838, 42.410715, 24.709303];
+      var per150_500Range = ['77.651906 - 100.000000', '61.027838 - 77.651905', '42.410715 - 61.027837', '24.709303 - 42.410714', '0.000000 - 24.709302'];
       var per500_milNums = [38.135199, 22.559854, 12.084064, 3.703705];
+      var per500_milRange = ['38.135199 - 67.822222', '22.559854 - 38.135198', '12.084064 - 22.559853', '3.703705 - 12.084063', '0.000000 - 3.703704'];
       var perOverMillNums = [22.843824, 12.032521, 5.908585, 1.759532];
+      var perOverMillRange = ['22.843824 - 52.950192', '12.032521 - 22.843823', '5.908585 - 12.032520', '1.759532 - 5.908584', '0.000000 - 1.759531'];
       var perWorkHomeNums = [13.526417, 8.348393, 5.056034, 2.425877];
+      var perWorkHomeRange = ['13.526417 - 25.219473', '8.348393 - 13.526416', '5.056034 - 8.348392', '2.425877 - 5.056033', '0.000000 - 2.425876'];
       var perPTNums = [24.873738, 14.491265, 8.321115, 3.618776];
+      var perPTRange = ['24.873738 - 51.254089', '14.491265 - 24.873737', '8.321115 - 14.491264', '3.618776 - 8.321114', '0.000000 - 3.618775'];
       var perMVNums = [84.932025, 75.885418, 61.084222, 29.663811];
+      var perMVRange = ['84.932025 - 97.461140', '75.885418 - 84.932024', '61.084222 - 75.885417', '29.663811 - 61.084221', '0.000000 - 29.663810'];
       var perNVNums = [23.157896, 10.714287, 5.313352, 2.277738];
-      
+      var perNVRange = ['23.157896 - 44.693474', '10.714287 - 23.157895', '5.313352 - 10.714286', '2.277738 - 5.313351', '0.000000 - 2.277737'];
       
       function setIcon(type) {
         var typeIcon = '';
@@ -58,7 +84,7 @@
         }
         var iconObj = L.icon({
           iconUrl: typeIcon,
-          iconSize: [16, 21],
+          iconSize: [20, 25],
           iconAnchor: [16, 37],
           popupAnchor: [0, -28]
         });
@@ -67,11 +93,11 @@
       }
       
       function popDensityColor(d) {
-        return  d > popDensityNums[0] ? popColor[4] :
-                d > popDensityNums[1] ? popColor[3] :
+        return  d > popDensityNums[0] ? popColor[0] :
+                d > popDensityNums[1] ? popColor[1] :
                 d > popDensityNums[2] ? popColor[2] :
-                d > popDensityNums[3] ? popColor[1] :
-                                        popColor[0] ;
+                d > popDensityNums[3] ? popColor[3] :
+                                        popColor[4] ;
       }
       
       function popDensityStyle(feature) {
@@ -86,11 +112,11 @@
       }
       
       function perCapitaIncomeColor(d) {
-        return  d > perCapitaIncomeNums[0]  ? popColor[4] :
-                d > perCapitaIncomeNums[1]  ? popColor[3] :
+        return  d > perCapitaIncomeNums[0]  ? popColor[0] :
+                d > perCapitaIncomeNums[1]  ? popColor[1] :
                 d > perCapitaIncomeNums[2]  ? popColor[2] :
-                d > perCapitaIncomeNums[3]  ? popColor[1] :
-                                              popColor[0] ;
+                d > perCapitaIncomeNums[3]  ? popColor[3] :
+                                              popColor[4] ;
       }
       
       function perCapitaIncomeStyle(feature) {
@@ -105,11 +131,11 @@
       }
       
       function lessThanHSColor(d) {
-        return  d > lessThanHSNums[0] ? eduColor[4] :
-                d > lessThanHSNums[1] ? eduColor[3] :
+        return  d > lessThanHSNums[0] ? eduColor[0] :
+                d > lessThanHSNums[1] ? eduColor[1] :
                 d > lessThanHSNums[2] ? eduColor[2] :
-                d > lessThanHSNums[3] ? eduColor[1] :
-                                        eduColor[0] ;
+                d > lessThanHSNums[3] ? eduColor[3] :
+                                        eduColor[4] ;
       }
       
       function lessThanHSStyle(feature) {
@@ -124,11 +150,11 @@
       }
       
       function graduatesColor(d) {
-        return  d > graduatesNums[0]  ? eduColor[4] :
-                d > graduatesNums[1]  ? eduColor[3] :
+        return  d > graduatesNums[0]  ? eduColor[0] :
+                d > graduatesNums[1]  ? eduColor[1] :
                 d > graduatesNums[2]  ? eduColor[2] :
-                d > graduatesNums[3]  ? eduColor[1] :
-                                        eduColor[0] ;
+                d > graduatesNums[3]  ? eduColor[3] :
+                                        eduColor[4] ;
       }
       
       function graduatesStyle(feature) {
@@ -143,11 +169,11 @@
       }
       
       function undergraduateColor(d) {
-        return  d > undergraduateNums[0]  ? eduColor[4] :
-                d > undergraduateNums[1]  ? eduColor[3] :
+        return  d > undergraduateNums[0]  ? eduColor[0] :
+                d > undergraduateNums[1]  ? eduColor[1] :
                 d > undergraduateNums[2]  ? eduColor[2] :
-                d > undergraduateNums[3]  ? eduColor[1] :
-                                            eduColor[0] ;
+                d > undergraduateNums[3]  ? eduColor[3] :
+                                            eduColor[4] ;
       }
       
       function undergraduateStyle(feature) {
@@ -162,11 +188,11 @@
       }
       
       function perUnder50KColor(d) {
-        return  d > perUnder50kNums[0]  ? econColor[4] :
-                d > perUnder50kNums[1]  ? econColor[3] :
+        return  d > perUnder50kNums[0]  ? econColor[0] :
+                d > perUnder50kNums[1]  ? econColor[1] :
                 d > perUnder50kNums[2]  ? econColor[2] :
-                d > perUnder50kNums[3]  ? econColor[1] :
-                                          econColor[0] ;
+                d > perUnder50kNums[3]  ? econColor[3] :
+                                          econColor[4] ;
       }
       
       function perUnder50KStyle(feature) {
@@ -181,11 +207,11 @@
       }
       
       function per100_150Color(d) {
-        return  d > per100_150Nums[0] ? econColor[4] :
-                d > per100_150Nums[1] ? econColor[3] :
+        return  d > per100_150Nums[0] ? econColor[0] :
+                d > per100_150Nums[1] ? econColor[1] :
                 d > per100_150Nums[2] ? econColor[2] :
-                d > per100_150Nums[3] ? econColor[1] :
-                                        econColor[0] ;
+                d > per100_150Nums[3] ? econColor[3] :
+                                        econColor[4] ;
       }
       
       function per100_150Style(feature) {
@@ -200,11 +226,11 @@
       }
       
       function per150_500Color(d) {
-        return  d > per150_500Nums[0] ? econColor[4] :
-                d > per150_500Nums[1] ? econColor[3] :
+        return  d > per150_500Nums[0] ? econColor[0] :
+                d > per150_500Nums[1] ? econColor[1] :
                 d > per150_500Nums[2] ? econColor[2] :
-                d > per150_500Nums[3] ? econColor[1] :
-                                        econColor[0] ;
+                d > per150_500Nums[3] ? econColor[3] :
+                                        econColor[4] ;
       }
       
       function per150_500Style(feature) {
@@ -219,11 +245,11 @@
       }
       
       function per500_milColor(d) {
-        return  d > per500_milNums[0] ? econColor[4] :
-                d > per500_milNums[1] ? econColor[3] :
+        return  d > per500_milNums[0] ? econColor[0] :
+                d > per500_milNums[1] ? econColor[1] :
                 d > per500_milNums[2] ? econColor[2] :
-                d > per500_milNums[3] ? econColor[1] :
-                                        econColor[0] ;
+                d > per500_milNums[3] ? econColor[3] :
+                                        econColor[4] ;
       }
       
       function per500_milStyle(feature) {
@@ -238,11 +264,11 @@
       }
       
       function perOverMillColor(d) {
-        return  d > perOverMillNums[0]  ? econColor[4] :
-                d > perOverMillNums[1]  ? econColor[3] :
+        return  d > perOverMillNums[0]  ? econColor[0] :
+                d > perOverMillNums[1]  ? econColor[1] :
                 d > perOverMillNums[2]  ? econColor[2] :
-                d > perOverMillNums[3]  ? econColor[1] :
-                                          econColor[0] ;
+                d > perOverMillNums[3]  ? econColor[3] :
+                                          econColor[4] ;
       }
       
       function perOverMillStyle(feature) {
@@ -257,11 +283,11 @@
       }
       
       function perWorkHomeColor(d) {
-        return  d > perWorkHomeNums[0]  ? transColor[4] :
-                d > perWorkHomeNums[1]  ? transColor[3] :
+        return  d > perWorkHomeNums[0]  ? transColor[0] :
+                d > perWorkHomeNums[1]  ? transColor[1] :
                 d > perWorkHomeNums[2]  ? transColor[2] :
-                d > perWorkHomeNums[3]  ? transColor[1] :
-                                          transColor[0] ;
+                d > perWorkHomeNums[3]  ? transColor[3] :
+                                          transColor[4] ;
       }
       
       function perWorkHomeStyle(feature) {
@@ -276,11 +302,11 @@
       }
       
       function perPTColor(d) {
-        return  d > perPTNums[0]  ? transColor[4] :
-                d > perPTNums[1]  ? transColor[3] :
+        return  d > perPTNums[0]  ? transColor[0] :
+                d > perPTNums[1]  ? transColor[1] :
                 d > perPTNums[2]  ? transColor[2] :
-                d > perPTNums[3]  ? transColor[1] :
-                                    transColor[0] ;
+                d > perPTNums[3]  ? transColor[3] :
+                                    transColor[4] ;
       }
       
       function perPTStyle(feature) {
@@ -295,11 +321,11 @@
       }
       
       function perMVColor(d) {
-        return  d > perMVNums[0]  ? transColor[4] :
-                d > perMVNums[1]  ? transColor[3] :
+        return  d > perMVNums[0]  ? transColor[0] :
+                d > perMVNums[1]  ? transColor[1] :
                 d > perMVNums[2]  ? transColor[2] :
-                d > perMVNums[3]  ? transColor[1] :
-                                    transColor[0] ;
+                d > perMVNums[3]  ? transColor[3] :
+                                    transColor[4] ;
       }
       
       function perMVStyle(feature) {
@@ -314,11 +340,11 @@
       }
       
       function perNVColor(d) {
-        return  d > perNVNums[0]  ? transColor[4] :
-                d > perNVNums[1]  ? transColor[3] :
+        return  d > perNVNums[0]  ? transColor[0] :
+                d > perNVNums[1]  ? transColor[1] :
                 d > perNVNums[2]  ? transColor[2] :
-                d > perNVNums[3]  ? transColor[1] :
-                                    transColor[0] ;
+                d > perNVNums[3]  ? transColor[3] :
+                                    transColor[4] ;
       }
       
       function perNVStyle(feature) {
@@ -391,22 +417,37 @@
       
       var perNV = new L.GeoJSON.AJAX("data/perNV.json", {style: perNVStyle});
       
+      var popDensityLabel = 'People Per Squre Mile';
+      var perCapitaIncomeLabel = 'Per Capita Income';
+      var lessThanHSLabel = 'High School Degree or Less';
+      var undergraduateLabel = 'Undergraduate Degree or Some College';
+      var graduatesLabel = 'Graduate Degree';
+      var perWorkHomeLabel = 'Work from Home';
+      var perPTLabel = 'Commute Public Transportation';
+      var perMVLabel = 'Commute Personal Vehicle';
+      var perNVLabel = 'Commute Bike or Walk';
+      var perUnder50KLabel = 'House Value Under 50K';
+      var per100_150Label = 'House Value 100k - 150k';
+      var per150_500Label = 'House Value 151k - 500k';
+      var per500_milLabel = 'House Value 500k - 1 Million';
+      var perOverMillLabel = 'House Value Over 1 Million';
+      
       var choroplethGroup = {
-        "Clear Map": clear,
-        "People Per Squre Mile": popDensity,
-        "Per Capita Income": perCapitaIncome,
-        "High School Degree or Less": lessThanHS,
-        "Undergraduate Degree or Some College": undergraduate,
-        "Graduate Degree": graduates,
-        "Work from Home": perWorkHome,
-        "Commute Public Transportation": perPT,
-        "Commute Personal Vehicle": perMV,
-        "Commute Bike or Walk": perNV,
-        "House Value Under 50K": perUnder50K,
-        "House Value 100k - 150k": per100_150,
-        "House Value 151k - 500k": per150_500,
-        "House Value 500k - 1 Million": per500_mil,
-        "House Value Over 1 Million": perOverMill
+        'Clear Map': clear,
+        'People Per Squre Mile': popDensity,
+        'Per Capita Income': perCapitaIncome,
+        'High School Degree or Less': lessThanHS,
+        'Undergraduate Degree or Some College': undergraduate,
+        'Graduate Degree': graduates,
+        'Work from Home': perWorkHome,
+        'Commute Public Transportation': perPT,
+        'Commute Personal Vehicle': perMV,
+        'Commute Bike or Walk': perNV,
+        'House Value Under 50K': perUnder50K,
+        'House Value 100k - 150k': per100_150,
+        'House Value 151k - 500k': per150_500,
+        'House Value 500k - 1 Million': per500_mil,
+        'House Value Over 1 Million': perOverMill
       };
     
       var map = L.map('map', {
@@ -416,6 +457,54 @@
       });
 
       L.control.layers(choroplethGroup).addTo(map);
+      
+      $(function() {
+        var labels = [
+          [popDensityLabel,popColor,popDensityRange],
+          [perCapitaIncomeLabel,popColor,perCapitaIncomeRange],
+          [lessThanHSLabel,eduColor,lessThanHSRange],
+          [undergraduateLabel,eduColor,undergraduateRange],
+          [graduatesLabel,eduColor,graduatesRange],
+          [perWorkHomeLabel,transColor,perWorkHomeRange],
+          [perPTLabel,transColor,perPTRange],
+          [perMVLabel,transColor,perMVRange],
+          [perNVLabel,transColor,perNVRange],
+          [perUnder50KLabel,econColor,perUnder50kRange],
+          [per100_150Label,econColor,per100_150Range],
+          [per150_500Label,econColor,per150_500Range],
+          [per500_milLabel,econColor,per500_milRange],
+          [perOverMillLabel,econColor,perOverMillRange]
+        ]
+        //Create Legend
+        var $legend = $('<ul/>');
+        $.each(labels, function(labelIndex){
+            var $item = $("<li/>");
+            $item.append('<span>'+labels[labelIndex][0]+'</span>').attr('id', labels[labelIndex][0].replace(/\s/g, ''));
+             $.each(labels[labelIndex][1], function(colorIndex){
+                var $container = $('<span/>').addClass('color-key'),
+                    $color = $('<span/>').css({'background-color':this}).addClass('box')
+                    $colorRange = $('<span/>').html(labels[labelIndex][2][colorIndex]);
+                
+                $container.append($color).append($colorRange).appendTo($item);
+                
+              })
+            $legend.append($item);
+          })
+        
+        $("[name='leaflet-base-layers']").on('change', function () {
+          
+          $('li').hide();
+          
+          $( "#legend" ).html($legend);
+          
+          var selected = $(this).parent().text();
+          console.log(selected);
+          var selectedID = selected.replace(/\s/g, '');
+          console.log(selectedID);
+          $('#'+selectedID).show();
+          
+        });
+      });
       
     </script>
   </body>

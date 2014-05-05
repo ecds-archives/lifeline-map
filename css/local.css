@@ -1,0 +1,29 @@
+#map {
+    float: left;
+    clear: both;
+}
+
+span.box {
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    margin-right: 5px;
+}
+span.color-key {
+    float: left;
+    display: block;
+    clear: left;
+}
+li > span:first-child {
+    float: left;
+    clear: both;
+    margin-top: 1em;
+}
+#legend ul {
+    list-style: none;
+    float: left;
+}
+
+li {
+    display: none;
+}
